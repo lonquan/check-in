@@ -51,8 +51,6 @@ export default {
 
       let newEl = document.createElement('div')
       newEl.classList = 'welcome-pane'
-      newEl.style.left = rect.x + 'px'
-      newEl.style.top = rect.y + 'px'
 
       // 插入头像
       let imageEl = document.createElement('img')
@@ -78,7 +76,7 @@ export default {
         easing: 'easeInOutSine'
       }).add({
         targets: newEl,
-        left: rect.x + 'px',
+        // left: rect.x + 'px',
         scale: 1.2,
         duration: 500
       }).add({
@@ -153,6 +151,8 @@ $avatar-size: 85px;
   justify-content: center;
   align-items: center;
   padding: 0;
+  left: calc(50% - 250px);
+  top: 35%;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
   border-radius: 3px;
   width: 500px;
