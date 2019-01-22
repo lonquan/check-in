@@ -10,9 +10,9 @@
     <div class="user-avatar-wrapper">
       <img class="avatar" :src="user.avatar" alt="">
 
-      <div class="welcome-pane" v-if="isAnimating">
+      <div class="welcome-pane" v-if="isAnimating" ref="welcomePane">
         <img class="welcome-avatar" :src="user.avatar" alt="">
-        <h3 class="welcome-msg">欢迎 {{ user.name }} 大佬！！</h3>
+        <h3 class="welcome-msg" ref="welcomeMsg">欢迎 {{ user.name }} 大佬！！</h3>
       </div>
     </div>
   </transition>
@@ -56,25 +56,35 @@ export default {
       const deltaX = bodyCenterX - elCenterX
       const deltaY = bodyCenterY - elCenterY
 
-      const animation = anime.timeline({
-        delay: 0,
-        endDelay: 0,
-        easing: 'easeInOutSine'
-      }).add({
-        targets: el,
-        scale: 2,
-        translateX: deltaX / 2 + 'px', // 除以缩放倍数
-        translateY: deltaY / 2 + 'px'
-      }).add({
-        delay: 3000,
-        targets: el,
-        scale: 1,
-        translateX: '0',
-        translateY: '0'
-      })
+      this.$nextTick(() => {
+        const animation = anime.timeline({
+          delay: 0,
+          endDelay: 0,
+          easing: 'easeInOutSine'
+        }).add({
+          targets: el,
+          scale: 2,
+          translateX: deltaX / 2 + 'px', // 除以缩放倍数
+          translateY: deltaY / 2 + 'px'
+        }).add({
+          targets: this.$refs.welcomePane,
+          backgroundColor: 'rgba(255, 255, 255, 0)',
+          // boxShadow: '0 0 0 rgba(255, 255, 255, 0)', // todo
+          duration: 200
+        }, 3000).add({
+          targets: this.$refs.welcomeMsg,
+          color: 'rgba(255, 255, 255, 0)',
+          duration: 200
+        }, 3000).add({
+          targets: el,
+          scale: 1,
+          translateX: '0',
+          translateY: '0'
+        }, 3000)
 
-      animation.finished.then(() => {
-        done()
+        animation.finished.then(() => {
+          done()
+        })
       })
     },
 
