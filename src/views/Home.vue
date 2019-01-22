@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import 'animate.css'
 import anime from 'animejs'
 import faker from 'faker'
 
@@ -50,12 +49,12 @@ export default {
   },
 
   mounted () {
-    setInterval(() => {
-      const unsignedUsers = this.users.filter(user => user.arrived === false)
+    // setInterval(() => {
+    //   const unsignedUsers = this.users.filter(user => user.arrived === false)
 
-      const randomIndex = getRandomIntInclusive(0, unsignedUsers.length - 1)
-      this.signup(unsignedUsers[randomIndex])
-    }, 5000)
+    //   const randomIndex = getRandomIntInclusive(0, unsignedUsers.length - 1)
+    //   this.signup(unsignedUsers[randomIndex])
+    // }, 5000)
   },
 
   methods: {
@@ -125,22 +124,16 @@ export default {
 $avatar-size: 85px;
 
 .app {
-  display: flex;
-
   .avatar-wall {
-    display: flex;
+    display: grid;
     width: 65%;
     overflow: hidden;
     background-color: #f8f8f8;
     margin: 0 auto;
-    padding: 3rem;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 1rem;
 
     .avatar-wrapper {
-      display: flex;
-      flex-direction: row;
-      margin: 1rem;
       position: relative;
 
       .avatar {
