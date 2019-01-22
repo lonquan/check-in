@@ -6,23 +6,17 @@
         :class="{ arrived: user.arrived }"
         v-for="user in users"
         :key="user.id"
-        @click="onClick(user.id)"
+        @click="onClick($event, user)"
       >
         <img class="avatar" :src="user.avatar" alt="">
-
-        <transition>
-          <div class="welcome-msg">
-            <img class="welcome-avatar" :src="user.avatar" alt="">
-
-            welcome haha
-          </div>
-        </transition>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import 'animate.css'
+import anime from 'animejs'
 import faker from 'faker'
 
 let users = []
@@ -30,8 +24,9 @@ let users = []
 for (let i = 1; i < 30; i++) {
   users.push({
     id: i,
-    name: faker.name,
-    avatar: faker.image.avatar(),
+    name: faker.name.firstName(),
+    // avatar: faker.image.avatar(),
+    avatar: '/avatar.jpg',
     arrived: false
   })
 }
@@ -49,9 +44,65 @@ export default {
   },
 
   methods: {
-    onClick (id) {
-      this.users[id - 1].arrived = true
-    }
+    onClick (event, user) {
+      const rect = event.target.getBoundingClientRect()
+
+      const welcomePaneOriginalWidth = 500
+
+      let newEl = document.createElement('div')
+      newEl.classList = 'welcome-pane'
+      newEl.style.left = rect.x + 'px'
+      newEl.style.top = rect.y + 'px'
+
+      // 插入头像
+      let imageEl = document.createElement('img')
+      imageEl.src = user.avatar
+      imageEl.classList = 'welcome-avatar'
+
+      newEl.appendChild(imageEl)
+
+      // 插入欢迎词
+      let textEl = document.createElement('p')
+      textEl.classList = 'welcome-msg'
+      textEl.textContent = `Welcome, ${user.name}!`
+
+      newEl.appendChild(textEl)
+
+      document.body.appendChild(newEl)
+
+      console.log(rect.x)
+
+      const animation = anime.timeline({
+        delay: 0,
+        endDelay: 0,
+        easing: 'easeInOutSine'
+      }).add({
+        targets: newEl,
+        left: rect.x + 'px',
+        scale: 1.2,
+        duration: 500
+      }).add({
+        targets: textEl,
+        color: '#f00',
+        scale: 0,
+        duration: 100,
+        delay: 3000
+      }).add({
+        targets: newEl,
+        delay: 0,
+        left: rect.x + 'px',
+        top: rect.y,
+        scale: 1,
+        width: '85px',
+        height: '85px',
+        borderRadius: '50%'
+      })
+
+      animation.finished.then(() => {
+        newEl.remove()
+      })
+
+    },
   },
 }
 </script>
@@ -89,45 +140,39 @@ $avatar-size: 85px;
         border: 1px solid #ccc;
 
       }
-
-      .welcome-msg {
-        visibility: hidden;
-        position: absolute;
-        width: $avatar-size;
-        height: $avatar-size;
-        left: 0;
-        top: 0;
-
-        .welcome-avatar {
-          width: $avatar-size;
-          height: $avatar-size;
-          border-radius: 50%;
-        }
-      }
-
-      &.arrived {
-
-
-        .welcome-msg {
-          border-radius: 5px;
-          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
-          visibility: visible;
-          display: block;
-          overflow: hidden;
-          z-index: 999;
-          padding: 3rem;
-          background-color: #fff;
-          left: 300px;
-          position: fixed;
-          transform: scale(2);
-          transition: all 1s ease-in-out;
-
-          .welcome-avatar {
-            transition: all 1s ease-in-out;
-          }
-        }
-      }
     }
+  }
+}
+</style>
+
+<style lang="scss">
+.welcome-pane {
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  width: 500px;
+  overflow: hidden;
+  background-color: #fff;
+  transform-origin: 85px center;
+
+  .welcome-avatar {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-top: 2rem;
+  }
+
+  .welcome-msg {
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    overflow: hidden;
   }
 }
 </style>
