@@ -67,7 +67,7 @@ export default {
         }).add({
           targets: this.$refs.welcomePane,
           backgroundColor: 'rgba(100, 100, 100, 0)'
-          // boxShadow: '0 0 0 #f00', // todo
+          // boxShadow: '0 0 0 #f00', // FIXME 好像有 BUG 不支持阴影动画
         }, 3000).add({
           targets: this.$refs.welcomeMsg,
           color: 'rgba(255, 255, 255, 0)',
