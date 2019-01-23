@@ -5,13 +5,6 @@
     <h1 class="title shadow-text">嘉宾签到</h1>
     <h2 class="sub-title shadow-text">The guest check in</h2>
 
-    <div class="center-avatar-wrapper">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
-      <img src="/default-avatar.jpg" alt="" class="center-avatar">
-    </div>
-
     <div class="current-user-info">
       <h1 class="user-name shadow-text">赵龙权</h1>
       <h2 class="user-title shadow-text">蚂蚁创想CEO 原新浪微博 API 架构师</h2>
@@ -22,12 +15,33 @@
       :class="{ fuck: isFuck }"
       @click="addUser"
     >
-      <UserAvatar
-        class="avatar-wrapper"
-        :user="user"
-        v-for="user in users"
-        :key="user.id"
-      />
+      <div class="left">
+        <UserAvatar
+          class="avatar-wrapper"
+          :user="user"
+          v-for="user in users"
+          :key="user.id"
+        />
+      </div>
+      <div class="center">
+        <!--占位，用于挤开中间部分-->
+        <div class="placeholder"></div>
+        <div class="center-avatar-wrapper">
+          <div class="circle circle-1"></div>
+          <div class="circle circle-2"></div>
+          <div class="circle circle-3"></div>
+          <img src="/default-avatar.jpg" alt="" class="center-avatar">
+        </div>
+      </div>
+      <div class="right">
+        <UserAvatar
+          class="avatar-wrapper"
+          :user="user"
+          v-for="user in users"
+          :key="user.id"
+        />
+      </div>
+
     </div>
   </div>
 </template>
@@ -70,16 +84,46 @@ export default {
     // setInterval(() => {
     //   this.addUser()
     // }, 5000)
-
+    //
     // anime({
-    //   targets: '.avatar-wrapper .avatar',
-    //   scale: [
-    //     {value: 1.2, easing: 'easeOutSine', duration: 500},
-    //     {value: 1, easing: 'easeInOutQuad', duration: 1200}
-    //   ],
-    //   delay: anime.stagger(200, {grid: [15, 2], from: 'center'}),
+    //   targets: '.center-avatar-wrapper',
+    //   width: '500px',
+    //   height: '500px',
+    //   delay: 0,
     //   loop: true
     // })
+
+    const el = document.querySelector('.center-avatar-wrapper')
+    const elPlaceholder = document.querySelector('.placeholder')
+
+    const animation = anime.timeline({
+      delay: 0,
+      endDelay: 0,
+      easing: 'easeInOutSine',
+      targets: '.center-avatar-wrapper',
+      loop: true
+    }).add({
+      targets: elPlaceholder,
+      width: '500px'
+    }, 1000).add({
+      width: '500px',
+      height: '500px',
+      clipPath: 'circle(300%)',
+      rotateY: '1turn'
+    }, 1000).add({
+      targets: elPlaceholder,
+      width: '0px',
+    }, 5000).add({
+      width: '0',
+      height: '0',
+      left: '100px',
+      top: '0px',
+      clipPath: 'circle(0)'
+    }, 5000)
+
+    animation.finished.then(() => {
+      console.log('hello')
+    })
 
     /* eslint-disable no-undef */
     particlesJS('particles-js', particleConfig)
@@ -102,8 +146,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 $avatar-size: 85px;
-$center-wrapper-size: 400px;
-$center-avatar-size: 240px;
+$center-wrapper-size: 0;
+$center-avatar-size: 60%;
 
 @keyframes fucking-1 {
   0% {
@@ -189,12 +233,10 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
     width: $center-wrapper-size;
     height: $center-wrapper-size;
-    left: calc(50% - #{$center-wrapper-size} / 2);
-    top: calc(50% - #{$center-wrapper-size} / 2);
-    z-index: 999;
+    z-index: 99999;
+    position: fixed;
 
     .center-avatar {
       z-index: 9999;
@@ -238,26 +280,61 @@ h2 {
 
   .avatar-wall {
     position: fixed;
-    display: grid;
+    display: flex;
     width: 85%;
     height: 600px;
     padding: 20px;
     background-color: #f8f8f82f;
-    grid-template-columns: 25% 25% 25% 25%;
-    grid-template-rows: auto;
     overflow: hidden;
-    transition: grid-template-columns 2s ease-in-out;
-    /*justify-content: center;*/
-    /*align-items: center;*/
+    justify-content: center;
+    align-items: center;
     justify-items: center;
 
-    &.fuck {
-      transition: all 2s ease-in-out;
-      grid-template-columns: 150px 150px auto 150px 150px;
+    .left,
+    .center,
+    .right {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .left {
+      /*background-color: yellow;*/
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-rows: auto;
+      grid-row-gap: 50px;
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .placeholder {
+        display: block;
+        width: 0;
+        height: 1px;
+      }
+    }
+
+    .right {
+      /*background-color: white;*/
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-rows: auto;
+      grid-row-gap: 50px;
     }
 
     .avatar-wrapper {
-      position: relative;
+      /*position: relative;*/
 
       .avatar {
         display: flex;
@@ -267,7 +344,6 @@ h2 {
         border-radius: 50%;
         padding: 3px;
         border: 1px solid #ccc;
-
       }
     }
   }
