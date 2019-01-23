@@ -50,9 +50,6 @@ export default {
       const elCenterX = (elRect.left + elRect.right) / 2
       const elCenterY = (elRect.top + elRect.bottom) / 2
 
-      console.table(elRect)
-      console.log(elCenterX)
-
       const deltaX = bodyCenterX - elCenterX
       const deltaY = bodyCenterY - elCenterY
 
@@ -65,12 +62,12 @@ export default {
           targets: el,
           scale: 2,
           translateX: deltaX / 2 + 'px', // 除以缩放倍数
-          translateY: deltaY / 2 + 'px'
+          translateY: deltaY / 2 + 'px',
+          clipPath: 'circle(300%)'
         }).add({
           targets: this.$refs.welcomePane,
-          backgroundColor: 'rgba(255, 255, 255, 0)',
-          // boxShadow: '0 0 0 rgba(255, 255, 255, 0)', // todo
-          duration: 200
+          backgroundColor: 'rgba(100, 100, 100, 0)'
+          // boxShadow: '0 0 0 #f00', // todo
         }, 3000).add({
           targets: this.$refs.welcomeMsg,
           color: 'rgba(255, 255, 255, 0)',
