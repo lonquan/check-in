@@ -2,8 +2,8 @@
   <div class="app">
     <div id="particles-js"></div>
 
-    <h1 class="title">嘉宾签到</h1>
-    <h2 class="sub-title">The guest check in</h2>
+    <h1 class="title shadow-text">嘉宾签到</h1>
+    <h2 class="sub-title shadow-text">The guest check in</h2>
 
     <div class="center-avatar-wrapper">
       <div class="circle circle-1"></div>
@@ -12,7 +12,16 @@
       <img src="/default-avatar.jpg" alt="" class="center-avatar">
     </div>
 
-    <div class="avatar-wall" @click="addUser">
+    <div class="current-user-info">
+      <h1 class="user-name shadow-text">赵龙权</h1>
+      <h2 class="user-title shadow-text">蚂蚁创想CEO 原新浪微博 API 架构师</h2>
+    </div>
+
+    <div
+      class="avatar-wall"
+      :class="{ fuck: isFuck }"
+      @click="addUser"
+    >
       <UserAvatar
         class="avatar-wrapper"
         :user="user"
@@ -52,7 +61,8 @@ export default {
 
   data () {
     return {
-      users
+      users,
+      isFuck: false
     }
   },
 
@@ -61,15 +71,15 @@ export default {
     //   this.addUser()
     // }, 5000)
 
-    anime({
-      targets: '.avatar-wrapper .avatar',
-      scale: [
-        {value: 1.2, easing: 'easeOutSine', duration: 500},
-        {value: 1, easing: 'easeInOutQuad', duration: 1200}
-      ],
-      delay: anime.stagger(200, {grid: [15, 2], from: 'center'}),
-      loop: true
-    })
+    // anime({
+    //   targets: '.avatar-wrapper .avatar',
+    //   scale: [
+    //     {value: 1.2, easing: 'easeOutSine', duration: 500},
+    //     {value: 1, easing: 'easeInOutQuad', duration: 1200}
+    //   ],
+    //   delay: anime.stagger(200, {grid: [15, 2], from: 'center'}),
+    //   loop: true
+    // })
 
     /* eslint-disable no-undef */
     particlesJS('particles-js', particleConfig)
@@ -77,11 +87,13 @@ export default {
 
   methods: {
     addUser () {
-      this.users.push({
-        id: this.users.length + 1,
-        name: faker.name.firstName(),
-        avatar: faker.image.image()
-      })
+      this.isFuck = !this.isFuck
+      // TODO
+      // this.users.push({
+      //   id: this.users.length + 1,
+      //   name: faker.name.firstName(),
+      //   avatar: faker.image.image()
+      // })
     }
   }
 }
@@ -130,6 +142,11 @@ $center-avatar-size: 240px;
   bottom: 0;
 }
 
+h1,
+h2 {
+  color: #7de7ff;
+}
+
 .title,
 .sub-title {
   color: #7de7ff;
@@ -137,7 +154,20 @@ $center-avatar-size: 240px;
   top: 20px;
   font-size: 3.5rem;
   font-weight: 500;
-  text-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.current-user-info {
+  position: fixed;
+  bottom: 100px;
+  font-weight: 300;
+
+  .user-name {
+    font-weight: 500;
+  }
+
+  .user-title {
+    font-weight: 400;
+  }
 }
 
 .sub-title {
@@ -211,16 +241,20 @@ $center-avatar-size: 240px;
     display: grid;
     width: 85%;
     height: 600px;
+    padding: 20px;
     background-color: #f8f8f82f;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    /*grid-template-columns: 100px auto 100px;*/
+    grid-template-columns: 25% 25% 25% 25%;
     grid-template-rows: auto;
-    /*grid-template-areas:*/
-      /*"avatar center avatar"*/
-      /*"avatar center avatar"*/
-      /*"avatar center avatar";*/
-    grid-gap: 2rem;
     overflow: hidden;
+    transition: grid-template-columns 2s ease-in-out;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    justify-items: center;
+
+    &.fuck {
+      transition: all 2s ease-in-out;
+      grid-template-columns: 150px 150px auto 150px 150px;
+    }
 
     .avatar-wrapper {
       position: relative;
