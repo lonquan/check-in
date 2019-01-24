@@ -93,37 +93,48 @@ export default {
     //   loop: true
     // })
 
+    anime({
+      targets: '.avatar-wall .avatar',
+      rotateX: [
+        {value: '0turn', easing: 'easeOutSine', duration: 500},
+        {value: '1turn', easing: 'easeInOutQuad', duration: 1200}
+      ],
+      delay: anime.stagger(200, {grid: [4, 5], from: 'center'}),
+      easing: 'easeInOutQuad',
+      loop: true
+    })
+
     const el = document.querySelector('.center-avatar-wrapper')
     const elPlaceholder = document.querySelector('.placeholder')
 
-    const animation = anime.timeline({
-      delay: 0,
-      endDelay: 0,
-      easing: 'easeInOutSine',
-      targets: '.center-avatar-wrapper',
-      loop: true
-    }).add({
-      targets: elPlaceholder,
-      width: '500px'
-    }, 1000).add({
-      width: '500px',
-      height: '500px',
-      clipPath: 'circle(300%)',
-      rotateY: '1turn'
-    }, 1000).add({
-      targets: elPlaceholder,
-      width: '0px',
-    }, 5000).add({
-      width: '0',
-      height: '0',
-      left: '100px',
-      top: '0px',
-      clipPath: 'circle(0)'
-    }, 5000)
-
-    animation.finished.then(() => {
-      console.log('hello')
-    })
+    // const animation = anime.timeline({
+    //   delay: 0,
+    //   endDelay: 0,
+    //   easing: 'easeInOutSine',
+    //   targets: '.center-avatar-wrapper',
+    //   loop: true
+    // }).add({
+    //   targets: elPlaceholder,
+    //   width: '500px'
+    // }, 1000).add({
+    //   width: '500px',
+    //   height: '500px',
+    //   clipPath: 'circle(300%)',
+    //   rotateY: '1turn'
+    // }, 1000).add({
+    //   targets: elPlaceholder,
+    //   width: '0px',
+    // }, 5000).add({
+    //   width: '0',
+    //   height: '0',
+    //   // left: '100px',
+    //   // top: '0px',
+    //   clipPath: 'circle(0)'
+    // }, 5000)
+    //
+    // animation.finished.then(() => {
+    //   console.log('hello')
+    // })
 
     /* eslint-disable no-undef */
     particlesJS('particles-js', particleConfig)
@@ -284,7 +295,7 @@ h2 {
     width: 85%;
     height: 600px;
     padding: 20px;
-    background-color: #f8f8f82f;
+    /*background-color: #f8f8f82f;*/
     overflow: hidden;
     justify-content: center;
     align-items: center;
