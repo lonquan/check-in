@@ -10,6 +10,8 @@
     <div class="user-avatar-wrapper">
       <img class="avatar" :src="user.avatar" alt="">
 
+      <h3 class="user-name text-light text-shadow">{{ user.name }}</h3>
+
       <div class="welcome-pane" v-if="isAnimating" ref="welcomePane">
         <img class="welcome-avatar" :src="user.avatar" alt="">
         <h3 class="welcome-msg" ref="welcomeMsg">欢迎 {{ user.name }} 大佬！！</h3>
