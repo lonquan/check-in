@@ -10,9 +10,24 @@
       <h2 class="user-title shadow-text">蚂蚁创想CEO 原新浪微博 API 架构师</h2>
     </div> -->
 
+    <div class="center-avatar-wrapper">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+      <img src="/default-avatar.jpg" alt="" class="center-avatar">
+    </div>
+
     <div class="swiper-container main-swiper">
       <div class="swiper-wrapper">
         <div class="swiper-slide" v-for="user in users" :key="user.id">
+          <div class="avatar-wrapper">
+            <img :src="user.avatar" alt="" class="user-avatar">
+            <h3 class="user-name">{{ user.name }}</h3>
+          </div>
+          <div class="avatar-wrapper">
+            <img :src="user.avatar" alt="" class="user-avatar">
+            <h3 class="user-name">{{ user.name }}</h3>
+          </div>
           <div class="avatar-wrapper">
             <img :src="user.avatar" alt="" class="user-avatar">
             <h3 class="user-name">{{ user.name }}</h3>
@@ -46,8 +61,9 @@ for (let i = 1; i <= 10; i++) {
   })
 }
 
+const bodyWidth = document.body.getBoundingClientRect().width
+const bodyHeight = document.body.getBoundingClientRect().height
 
-console.table(users)
 export default {
   name: 'HelloWorld',
 
@@ -61,22 +77,27 @@ export default {
 
   mounted () {
     const mySwiper = new Swiper('.swiper-container', {
-      autoplay: {
-        delay: 2000,
-
-      },
-      loop: false,
-      slidesPerView: 2,
-      slidesPerColumn: 3,
-      slidesPerGroup: 6,
+      // autoplay: {
+      //   delay: 2000,
+      //   disableOnInteraction: false
+      // },
+      autoplay: false,
+      direction: 'horizontal',
+      // loop: true,
+      slidesPerView: 4,
+      slidesPerColumn: 2,
+      // spaceBetween: bodyWidth / 3,
+      spaceBetween: 30,
+      slidesPerGroup: 2,
       slidesPerColumnFill: 'column',
       // loopFillGroupWithBlank: true,
       centeredSlides: false,
-      observer: true
+      observer: true,
+      observeSlideChildren: true
     })
 
-    // const el = document.querySelector('.center-avatar-wrapper')
-    // const elPlaceholder = document.querySelector('.placeholder')
+    const el = document.querySelector('.center-avatar-wrapper')
+    const elPlaceholder = document.querySelector('.placeholder')
 
     // const animation = anime.timeline({
     //   delay: 0,
@@ -86,7 +107,16 @@ export default {
     //   loop: false
     // }).add({
     //   targets: elPlaceholder,
-    //   width: '500px'
+    //   width: '500px',
+    //   begin: () => {
+    //     mySwiper.params.slidesPerView = 2
+    //     mySwiper.params.spaceBetween = 200
+    //     mySwiper.update()
+    //   },
+    //   complete: () => {
+    //     console.log(mySwiper)
+
+    //   }
     // }, 1000).add({
     //   width: '500px',
     //   height: '500px',
@@ -100,19 +130,20 @@ export default {
     //   height: '0',
     //   // left: '100px',
     //   // top: '0px',
-    //   clipPath: 'circle(0)'
+    //   clipPath: 'circle(0)',
+    //   complete: function () {
+    //     mySwiper.params.slidesPerView = 4
+    //     mySwiper.params.spaceBetween = 10
+    //     mySwiper.update()
+    //   }
     // }, 5000)
-    //
+
     // animation.finished.then(() => {
     //   console.log('hello')
     // })
 
     /* eslint-disable no-undef */
     particlesJS('particles-js', particleConfig)
-
-    // setInterval(() => {
-    //   this.addUser()
-    // }, 2000);
   },
 
   methods: {
@@ -133,7 +164,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   $avatar-size: 85px;
-  $center-wrapper-size: 0;
+  $center-wrapper-size: 200px;
   $center-avatar-size: 60%;
 
   @keyframes fucking-1 {
@@ -190,15 +221,64 @@ export default {
     background-size: cover;
   }
 
+  .swiper-slide {
+    margin-top: 0 !important; // spacebetween 问题
+  }
+
+   .center-avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: $center-wrapper-size;
+      height: $center-wrapper-size;
+      z-index: 99999;
+      position: fixed;
+      .center-avatar {
+        z-index: 9999;
+        width: $center-avatar-size;
+        height: $center-avatar-size;
+        border-radius: 50%;
+        background: #0466bf;
+        padding: 4px;
+        box-shadow: 0 3px 5px rgba(6, 101, 191, 0.5);
+      }
+      .circle {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-position: center center;
+        background-size: cover;
+      }
+      .circle-1 {
+        background-image: url(../assets/01.png);
+        transform: rotate(75deg);
+        animation-name: fucking-1;
+        animation-duration: 4s;
+        animation-iteration-count: infinite;
+      }
+      .circle-2 {
+        background-image: url(../assets/02.png);
+        animation-name: fucking-2;
+        animation-duration: 5s;
+        animation-iteration-count: infinite;
+      }
+      .circle-3 {
+        background-image: url(../assets/03.png);
+      }
+    }
+
   .swiper-container {
     width: 80%;
     height: 70%;
 
     .swiper-slide {
-      height: 18vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
+      background-color: #f00;
+      height: 85%;
     }
 
     .avatar-wrapper {
