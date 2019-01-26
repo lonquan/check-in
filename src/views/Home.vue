@@ -9,12 +9,11 @@
       <div class="circle circle-1"></div>
       <div class="circle circle-2"></div>
       <div class="circle circle-3"></div>
-      <img src="/default-avatar.jpg" alt="" class="center-avatar">
-
-      <div class="current-user-info">
-        <h1 class="user-name text-shadow text-light">赵龙权</h1>
-        <h2 class="user-title text-shadow text-light">蚂蚁创想CEO 原新浪微博 API 架构师</h2>
-      </div>
+      <img :src="currentCheckinUser.avatar" alt="" class="center-avatar">
+    </div>
+    <div class="current-user-info">
+      <h1 class="user-name text-shadow text-light">{{ currentCheckinUser.name }}</h1>
+      <h2 class="user-title text-shadow text-light">{{ currentCheckinUser.title }}</h2>
     </div>
 
     <div class="swiper-container main-swiper">
@@ -25,7 +24,6 @@
             <h3 class="user-name text-shadow text-light">{{ user.name }}</h3>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -63,12 +61,19 @@ export default {
 
   data () {
     return {
-      users
+      users,
+      mySwiper: null,
+      currentCheckinUser: {
+        id: null,
+        name: null,
+        avatar: null,
+        title: null
+      }
     }
   },
 
   mounted () {
-    const mySwiper = new Swiper('.swiper-container', {
+    this.mySwiper = new Swiper('.swiper-container', {
       autoplay: {
         delay: 2000,
         disableOnInteraction: false
@@ -88,54 +93,83 @@ export default {
       observeSlideChildren: true
     })
 
-    const el = document.querySelector('.current-user-wrapper')
-
-    const animation = anime.timeline({
-      delay: 0,
-      endDelay: 0,
-      easing: 'easeInOutSine',
-      targets: '.current-user-wrapper',
-      loop: false
-    }).add({
-      width: bodyHeight / 3 + 'px',
-      height: bodyHeight / 3 + 'px',
-      clipPath: 'circle(300%)',
-      rotateY: '1turn',
-      duration: 500,
-      begin: () => {
-        mySwiper.autoplay.pause()
-        mySwiper.params.slidesPerView = 2
-        mySwiper.params.spaceBetween = bodyWidth * 0.8 - 200
-        mySwiper.update()
-      }
-    }).add({
-      delay: 3000,
-      width: '0',
-      height: '0',
-      clipPath: 'circle(0)',
-      complete: function () {
-        mySwiper.params.slidesPerView = 4
-        mySwiper.params.spaceBetween = 10
-        mySwiper.update()
-        mySwiper.autoplay.run()
-      }
-    })
-
-    animation.finished.then(() => {
-      console.log('hello')
-    })
-
     /* eslint-disable no-undef */
     particlesJS('particles-js', particleConfig)
+
+    let interval = setInterval(() => {
+      if (this.users.length < 50) {
+        this.addUser()
+      } else {
+        clearInterval(interval)
+      }
+    }, 8000)
   },
 
   methods: {
     addUser () {
-      this.users.push({
+      const newUser = {
         id: this.users.length + 1,
         name: faker.name.firstName(),
         // avatar: faker.image.image()
-        avatar: '/default-avatar.jpg'
+        avatar: '/default-avatar.jpg',
+        title: '蚂蚁创想CEO 原新浪微博 API 架构师'
+      }
+
+      this.users.push(newUser)
+      this.currentCheckinUser = newUser
+
+      this.showCheckinPopup()
+    },
+
+    showCheckinPopup () {
+      const elCurrentUserWrapper = document.querySelector('.current-user-wrapper')
+      const elCurrentUserInfo = document.querySelector('.current-user-info')
+
+      // 停留时间(ms)
+      const holdTime = 4000
+
+      const bodyHeight = document.body.getBoundingClientRect().height
+      const animation = anime.timeline({
+        delay: 0,
+        endDelay: 0,
+        easing: 'easeInOutSine',
+        // loop: true
+      }).add({
+        targets: elCurrentUserWrapper,
+        width: bodyHeight / 3 + 'px',
+        height: bodyHeight / 3 + 'px',
+        // clipPath: 'circle(300%)',
+        rotateY: '1turn',
+        duration: 500,
+        begin: () => {
+          this.mySwiper.autoplay.pause()
+          this.mySwiper.params.slidesPerView = 2
+          this.mySwiper.params.spaceBetween = bodyWidth * 0.8 - 200
+          this.mySwiper.update()
+        }
+      }).add({
+        targets: elCurrentUserInfo,
+        opacity: 1,
+        duration: 500
+      }, 0).add({
+        targets: elCurrentUserInfo,
+        opacity: 0,
+        duration: 500
+      }, holdTime).add({
+        targets: elCurrentUserWrapper,
+        width: '0',
+        height: '0',
+        // clipPath: 'circle(0)',
+        complete: () => {
+          this.mySwiper.params.slidesPerView = 4
+          this.mySwiper.params.spaceBetween = 10
+          this.mySwiper.update()
+          this.mySwiper.autoplay.run()
+        }
+      }, holdTime)
+
+      animation.finished.then(() => {
+        console.log('hello')
       })
     }
   }
@@ -145,7 +179,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   $avatar-size: 90px;
-  $center-wrapper-size: 100px;
+  $current-user-wrapper-size: 0;
   $center-avatar-size: 60%;
 
   @keyframes rotate-circle-1 {
@@ -210,8 +244,8 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: $center-wrapper-size;
-      height: $center-wrapper-size;
+      width: $current-user-wrapper-size;
+      height: $current-user-wrapper-size;
       z-index: 99999;
       position: fixed;
 
@@ -253,6 +287,19 @@ export default {
   .current-user-info {
     display: block;
     position: fixed;
+    bottom: 10%;
+    opacity: 0;
+
+    .user-name {
+      font-size: 1.8rem;
+      font-weight: 4;
+    }
+
+    .user-title {
+      font-size: 1.35rem;
+      font-weight: 400;
+      margin-top: 0.5em;
+    }
   }
 
   .swiper-container {
