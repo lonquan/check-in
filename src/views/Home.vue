@@ -2,18 +2,22 @@
   <div class="app">
     <div id="particles-js"></div>
 
-    <h1 class="title text-shadow text-light">嘉宾签到</h1>
-    <h2 class="sub-title text-shadow text-light">The guest check in</h2>
-
-    <div class="current-user-wrapper">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
-      <img :src="currentCheckinUser.avatar" alt="" class="center-avatar">
+    <div class="title-wrapper">
+      <h1 class="title text-shadow text-light">嘉宾签到</h1>
+      <h2 class="sub-title text-shadow text-light">The guest check in</h2>
     </div>
-    <div class="current-user-info">
-      <h1 class="user-name text-shadow text-light">{{ currentCheckinUser.name }}</h1>
-      <h2 class="user-title text-shadow text-light">{{ currentCheckinUser.title }}</h2>
+
+    <div class="popup-wrapper">
+      <div class="animated-avatar-wrapper">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <img :src="currentCheckinUser.avatar" alt="" class="center-avatar">
+      </div>
+      <div class="user-info">
+        <h1 class="user-name text-shadow text-light">{{ currentCheckinUser.name }}</h1>
+        <h2 class="user-title text-shadow text-light">{{ currentCheckinUser.title }}</h2>
+      </div>
     </div>
 
     <div class="swiper-container main-swiper">
@@ -78,16 +82,13 @@ export default {
         delay: 2000,
         disableOnInteraction: false
       },
-      // autoplay: false,
       direction: 'horizontal',
       // loop: true,
       slidesPerView: 4,
       slidesPerColumn: 2,
-      // spaceBetween: bodyWidth / 3,
       spaceBetween: 30,
       slidesPerGroup: 2,
       slidesPerColumnFill: 'column',
-      // loopFillGroupWithBlank: true,
       centeredSlides: false,
       observer: true,
       observeSlideChildren: true
@@ -122,8 +123,9 @@ export default {
     },
 
     showCheckinPopup () {
-      const elCurrentUserWrapper = document.querySelector('.current-user-wrapper')
-      const elCurrentUserInfo = document.querySelector('.current-user-info')
+      const elPopupWrapper = document.querySelector('.popup-wrapper')
+      const elCurrentUserWrapper = document.querySelector('.animated-avatar-wrapper')
+      const elCurrentUserInfo = document.querySelector('.user-info')
 
       // TODO: 停留时间(ms)
       const holdTime = 4000
@@ -135,6 +137,10 @@ export default {
         easing: 'easeInOutSine',
         // loop: true
       }).add({
+        targets: elPopupWrapper,
+        padding: '30px',
+        duration: 500
+      }, 0).add({
         targets: elCurrentUserWrapper,
         width: bodyHeight / 3 + 'px',
         height: bodyHeight / 3 + 'px',
@@ -148,14 +154,20 @@ export default {
           // this.mySwiper.params.spaceBetween = bodyWidth * 0.8 - 200
           // this.mySwiper.update()
         }
-      }).add({
+      }, 0).add({
         targets: elCurrentUserInfo,
         opacity: 1,
-        duration: 500
+        duration: 500,
+        begin: () => {
+          elCurrentUserInfo.style.display = 'flex'
+        }
       }, 0).add({
         targets: elCurrentUserInfo,
         opacity: 0,
-        duration: 500
+        duration: 500,
+        complete: () => {
+          elCurrentUserInfo.style.display = 'none'
+        }
       }, holdTime).add({
         targets: elCurrentUserWrapper,
         width: '0',
@@ -166,6 +178,10 @@ export default {
           // this.mySwiper.update()
           // this.mySwiper.autoplay.run()
         }
+      }, holdTime).add({
+        targets: elPopupWrapper,
+        padding: 0,
+        duration: 500
       }, holdTime)
 
       animation.finished.then(() => {
@@ -178,8 +194,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-  $avatar-size: 90px;
-  $current-user-wrapper-size: 0;
+  $avatar-size: 110px;
+  $animated-avatar-wrapper-size: 0;
   $center-avatar-size: 60%;
 
   @keyframes rotate-circle-1 {
@@ -219,11 +235,6 @@ export default {
     bottom: 0;
   }
 
-  h1,
-  h2 {
-    color: #7de7ff;
-  }
-
   .app {
     display: flex;
     width: 100vw;
@@ -236,18 +247,39 @@ export default {
     background-size: cover;
   }
 
-  .swiper-slide {
-    margin-top: 20px !important; // spacebetween 问题
+  .title-wrapper {
+    top: -30px;
+    position: fixed;
+    top: 50px;
+
+    .title {
+
+    }
+    .sub-title {
+
+    }
   }
 
-   .current-user-wrapper {
+  .popup-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    overflow: hidden;
+    position: fixed;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+
+    .animated-avatar-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: $current-user-wrapper-size;
-      height: $current-user-wrapper-size;
+      width: $animated-avatar-wrapper-size;
+      height: $animated-avatar-wrapper-size;
       z-index: 99999;
-      position: fixed;
+      position: relative;
+      margin-bottom: 20px;
 
       .center-avatar {
         z-index: 9999;
@@ -284,33 +316,35 @@ export default {
       }
     }
 
-  .current-user-info {
-    display: block;
-    position: fixed;
-    bottom: 10%;
-    opacity: 0;
+    .user-info {
+      display: none;
+      flex-direction: column;
+      opacity: 0;
 
-    .user-name {
-      font-size: 1.8rem;
-      font-weight: 4;
-    }
+      .user-name {
+        font-size: 1.8rem;
+        font-weight: 4;
+      }
 
-    .user-title {
-      font-size: 1.35rem;
-      font-weight: 400;
-      margin-top: 0.5em;
+      .user-title {
+        font-size: 1.35rem;
+        font-weight: 400;
+        margin-top: 0.5em;
+      }
     }
   }
 
   .swiper-container {
     width: 80%;
+    position: fixed;
+    bottom: 50px;
 
     .swiper-slide {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 150px;
+      height: 200px;
     }
 
     .avatar-wrapper {
