@@ -82,7 +82,7 @@ export default {
       direction: 'horizontal',
       // loop: true,
       slidesPerView: 4,
-      slidesPerColumn: 3,
+      slidesPerColumn: 2,
       // spaceBetween: bodyWidth / 3,
       spaceBetween: 30,
       slidesPerGroup: 2,
@@ -125,7 +125,7 @@ export default {
       const elCurrentUserWrapper = document.querySelector('.current-user-wrapper')
       const elCurrentUserInfo = document.querySelector('.current-user-info')
 
-      // 停留时间(ms)
+      // TODO: 停留时间(ms)
       const holdTime = 4000
 
       const bodyHeight = document.body.getBoundingClientRect().height
@@ -139,13 +139,14 @@ export default {
         width: bodyHeight / 3 + 'px',
         height: bodyHeight / 3 + 'px',
         // clipPath: 'circle(300%)',
-        rotateY: '1turn',
+        // rotateY: '1turn',
         duration: 500,
         begin: () => {
-          this.mySwiper.autoplay.pause()
-          this.mySwiper.params.slidesPerView = 2
-          this.mySwiper.params.spaceBetween = bodyWidth * 0.8 - 200
-          this.mySwiper.update()
+          // TODO
+          // this.mySwiper.autoplay.pause()
+          // this.mySwiper.params.slidesPerView = 2
+          // this.mySwiper.params.spaceBetween = bodyWidth * 0.8 - 200
+          // this.mySwiper.update()
         }
       }).add({
         targets: elCurrentUserInfo,
@@ -159,12 +160,11 @@ export default {
         targets: elCurrentUserWrapper,
         width: '0',
         height: '0',
-        // clipPath: 'circle(0)',
         complete: () => {
-          this.mySwiper.params.slidesPerView = 4
-          this.mySwiper.params.spaceBetween = 10
-          this.mySwiper.update()
-          this.mySwiper.autoplay.run()
+          // this.mySwiper.params.slidesPerView = 4
+          // this.mySwiper.params.spaceBetween = 10
+          // this.mySwiper.update()
+          // this.mySwiper.autoplay.run()
         }
       }, holdTime)
 
