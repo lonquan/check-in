@@ -20,23 +20,17 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import faker from 'faker'
-  import anime from 'animejs'
   import axios from 'axios'
   import 'particles.js'
-
-  import AvatarAlert from './Alert';
-
   import particleConfig from '../assets/particle-config'
 
   import Swiper from 'swiper'
   import 'swiper/dist/css/swiper.css'
 
+  import AvatarPopup from '../components/AvatarPopup'
+
   export default {
     name: 'HelloWorld',
-
-    components: { AvatarAlert },
 
     data () {
       return {
@@ -54,6 +48,19 @@
     },
 
     mounted () {
+      // TODO
+      // 下面是基本使用示例，
+      // 第一个参数传用户信息
+      // 第二个是弹出的配置，目前仅一个停留时间，duration 可以配置
+      // AvatarPopup 另有 close, closeAll 两个方法用于关闭弹出层
+      AvatarPopup.show({
+        avatar: 'default-avatar.jpg',
+        name: 'fuck',
+        title: 'I am CEO, BITCH.'
+      }, {
+        duration: 4000
+      })
+
       this.mySwiper = new Swiper('.swiper-container', {
         autoplay: {
           delay: 3000,
